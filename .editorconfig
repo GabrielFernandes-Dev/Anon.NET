@@ -1,0 +1,13 @@
+root=true
+
+[*]
+charset = utf-8
+indent_style = space
+insert_final_newline = true
+
+[{*.xml,*.csproj,*.vbproj,*.props,*.targets,*.nuspec}]
+indent_size = 2
+
+[*.cs]
+resharper_default_private_modifier = implicit
+resharper_default_internal_modifier = implicit
