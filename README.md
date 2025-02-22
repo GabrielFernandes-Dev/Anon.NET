@@ -1,31 +1,176 @@
-[![test](https://github.com/hazzik/dotnet-lib-template/actions/workflows/test.yml/badge.svg)](https://github.com/hazzik/dotnet-lib-template/actions/workflows/test.yml)
-[![publish](https://github.com/hazzik/dotnet-lib-template/actions/workflows/publish.yml/badge.svg)](https://github.com/hazzik/dotnet-lib-template/actions/workflows/publish.yml)
-[![NuGet Version](https://img.shields.io/nuget/v/TemplateProject)](https://www.nuget.org/packages/TemplateProject/)
+# Anon.NET
 
-## A .NET Lib Template repository
+## Sistema de Anonimização e Auditoria de Dados Sensíveis para Ambientes Corporativos
 
-This repository is a template for creating a new .NET library. It includes a GitHub Actions workflow that will run tests on every push and publish the library to NuGet on a tag or merge to the main branch.
+### Sobre o Projeto
+**Anon.NET** é uma solução desenvolvida em **C# .NET** que atua como uma camada intermediária entre bancos de dados e aplicações corporativas, fornecendo recursos avançados de **anonimização de dados, auditoria e controle de acesso**. 
 
-### Why?
+O projeto visa atender às necessidades crescentes de proteção de dados e conformidade com regulamentações como **LGPD** e **GDPR**, mantendo a funcionalidade e eficiência dos sistemas existentes.
 
-I have a lot of ideas brewing in my head all the time. However, the chores of setting up a new project usually act as a barrier to getting started. Last time, when I had a sparky idea worth implementing, I spent a lot of time setting up the project, and by the time I finished, the idea had faded away. I've lost the spark. 
+---
 
-So, I created this template because I wanted a quick way to create a new library and start working on it without worrying about setting up the project.
+## Funcionalidades Principais
 
-This template includes pre-configured things that I usually use in my projects.
+### **Anonimização de Dados**
+Implementação de múltiplas técnicas de anonimização:
+- **K-anonymity**
+- **L-Diversity**
+- **T-closeness**
+- **Differential Privacy**
 
-### How to use this template?
+Outros métodos avançados:
+- **Sistema de anonimização em camadas**
+- **Tokenização reversível**
+- **Mascaramento dinâmico de dados**
 
-1. Click on the "Use this template" button on the top right corner of this page.
-2. Fill in the repository name, description, and other details.
-3. Click on the "Create repository" button.
-4. Clone the repository to your local machine.
-5. Replace all references of `dotnet-lib-template` to your repository name.
-6. Replace all references of `TemplateProject` to your project name.
-7. Replace the content of this README.md file with your project's README.
-8. Replace the content of the LICENSE file with your project's license.
-9. Start working on your project.
+### **Sistema de Auditoria**
+- **Logging detalhado de acessos**
+- **Rastreamento de modificações em dados sensíveis**
+- **Geração de relatórios de conformidade**
+- **Sistema de alertas de segurança**
 
-## Sponsorship
+### **Controle de Acesso**
+- **Gerenciamento granular de permissões**
+- **Políticas baseadas em contexto**
+- **Diferentes níveis de acesso aos dados**
+- **Interface administrativa para gestão**
 
-If you like the library please consider [supporting my work](https://github.com/sponsors/hazzik).
+---
+
+## Arquitetura
+
+### **Componentes Principais**
+- **Middleware Core (.NET)**
+- **Sistema de Regras de Anonimização**
+- **Engine de Processamento de Dados**
+- **Módulo de Auditoria**
+- **Interface de Administração**
+
+### **Tecnologias Utilizadas**
+- **C# .NET 8.0+**
+- **Entity Framework Core**
+- **SQL Server/MySQL**
+- **Sistema de Logging**
+- **Docker**
+
+---
+
+## Instalação
+
+```bash
+# Clone o repositório
+git clone https://github.com/GabrielFernandes-Dev/Anon.NET
+
+# Navegue até o diretório
+cd anon.net
+
+# Restaure as dependências
+dotnet restore
+
+# Execute o projeto
+dotnet run
+```
+
+---
+
+## Configuração
+
+### **Requisitos do Sistema**
+- **.NET 8.0 ou superior**
+- **SQL Server 2019 ou MySQL**
+- **Visual Studio 2022 ou VS Code**
+
+### **Configuração Inicial**
+1. Configure a string de conexão no **appsettings.json**
+2. Execute as **migrações do banco de dados**
+3. Configure as **regras de anonimização**
+4. Defina as **políticas de acesso**
+
+---
+
+## Uso
+
+### **Integração Básica**
+
+Adicione o middleware no **Program.cs**:
+
+```csharp
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        
+        // Adicione o middleware
+        builder.Services.AddAnonimization();
+        
+        var app = builder.Build();
+        
+        // Use o middleware
+        app.UseAnonimization();
+        
+        app.Run();
+    }
+}
+```
+
+---
+
+## Roadmap
+
+### **Em Desenvolvimento**
+- Implementação das estratégias de anonimização
+- Sistema completo de auditoria
+- Interface administrativa
+- Testes de performance
+- Documentação técnica
+
+### **Planejado**
+- Suporte a múltiplos bancos de dados
+- Dashboard de análise
+- API REST para integração
+- Suporte a containerização
+
+---
+
+## Contribuição
+Este é um projeto acadêmico desenvolvido como **Trabalho de Conclusão de Curso**. Contribuições são bem-vindas através de:
+
+- **Issues**
+- **Sugestões de melhorias**
+- **Reportes de bugs**
+
+---
+
+## Aspectos Técnicos
+
+### **Performance**
+- Otimização de queries
+- Cache de dados anonimizados
+- Processamento assíncrono
+
+### **Segurança**
+- Criptografia em camadas
+- Proteção contra ataques comuns
+- Validação de entrada de dados
+- Logging seguro
+
+---
+
+## Status do Projeto
+📌 **Em desenvolvimento ativo - Trabalho de Conclusão de Curso**
+
+---
+
+## Documentação
+<!--📄 A documentação completa está em desenvolvimento. Consulte a pasta **/docs** para mais informações.-->
+
+---
+
+## Autor
+- Gabriel Gomes Fernandes
+
+### **Contato**
+📧 Email: gabrielgfernandes04@outlook.com
+🔗 LinkedIn: [Gabriel Gomes](https://www.linkedin.com/in/gabriel-g-fernandes/)
+🐙 GitHub: [GabrielFernandes-Dev](https://github.com/GabrielFernandes-Dev)
