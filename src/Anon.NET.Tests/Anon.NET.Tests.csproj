@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TemplateProject\TemplateProject.csproj" />
+      <ProjectReference Include="..\Anon.NET\Anon.NET.csproj" />
     </ItemGroup>
 
 </Project>

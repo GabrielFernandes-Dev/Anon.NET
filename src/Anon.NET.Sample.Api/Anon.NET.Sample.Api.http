@@ -1,0 +1,6 @@
+@Anon.NET.Sample.Api_HostAddress = http://localhost:5264
+
+GET {{Anon.NET.Sample.Api_HostAddress}}/
+Accept: application/json
+
+###

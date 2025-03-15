@@ -1,4 +1,4 @@
-﻿namespace TemplateProject.Tests;
+﻿namespace Anon.NET.Tests;
 
 [TestFixture]
 public class GreetingsTest

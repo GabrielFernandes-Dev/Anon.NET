@@ -102,12 +102,12 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         
         // Adicione o middleware
-        builder.Services.AddAnonimization();
+        builder.Services.AddAnonymization();
         
         var app = builder.Build();
         
         // Use o middleware
-        app.UseAnonimization();
+        app.UseAnonymization();
         
         app.Run();
     }
