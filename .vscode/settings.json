@@ -1,0 +1,3 @@
+{
+    "iis.configDir": "${workspaceFolder}\\src\\.vs\\Anon.NET\\config"
+}

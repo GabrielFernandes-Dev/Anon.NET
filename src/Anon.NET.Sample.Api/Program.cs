@@ -3,6 +3,7 @@ using Anon.NET.SqlInterception.EntityFramework;
 using Anon.NET.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,11 +55,16 @@ app.MapGet("/", (HttpContext context) => {
 });
 
 // Rota para testar a interceptação de SQL
-app.MapGet("/test-db", async (SampleDbContext dbContext) => {
-    // Executa uma query simples para testar o interceptor
-    var users = await dbContext.Users.ToListAsync();
-    return Results.Ok(new { Message = "Query executada com sucesso", UserCount = users.Count });
+app.MapGet("/vulnerable-search", async (SampleDbContext dbContext, [FromQuery] string name) => {
+    // VULNERABLE: Direct string interpolation in SQL query
+    var query = $"SELECT * FROM Users WHERE Name LIKE '%{name}%'";
+
+    // Using raw SQL with FromSqlRaw makes this vulnerable to injection
+    var users = await dbContext.Users.FromSqlRaw(query).ToListAsync();
+
+    return Results.Ok(new { Message = "Search completed", Users = users });
 });
+
 app.Run();
 
 public class SampleDbContext : DbContext

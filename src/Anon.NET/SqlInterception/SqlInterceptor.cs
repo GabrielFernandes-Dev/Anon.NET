@@ -19,6 +19,27 @@ public class SqlInterceptor : ISqlInterceptor
     /// <inheritdoc />
     public void InterceptQuery(SqlQuery query)
     {
+        var injectionResult = DetectSqlInjection(query.CommandText, query.Parameters);
+
+        if (injectionResult.IsDetected)
+        {
+            _logger.Warning(
+                "POTENTIAL SQL INJECTION DETECTED: {QueryId} | Pattern: {Pattern} | Severity: {Severity}",
+                query.Id,
+                injectionResult.Pattern,
+                injectionResult.Severity
+            );
+
+            // Add the SQL injection detection result to additional info
+            query.AdditionalInfo["SqlInjectionDetected"] = true;
+            query.AdditionalInfo["SqlInjectionPattern"] = injectionResult.Pattern;
+            query.AdditionalInfo["SqlInjectionSeverity"] = injectionResult.Severity.ToString();
+            if (injectionResult.Parameter != null)
+            {
+                query.AdditionalInfo["SqlInjectionParameter"] = injectionResult.Parameter;
+            }
+        }
+
         _logger.Information(
             "SQL Query Executed: {QueryId} | Type: {QueryType} | Duration: {DurationMs}ms | Source: {Source}",
             query.Id,
@@ -69,6 +90,67 @@ public class SqlInterceptor : ISqlInterceptor
             TransactionId = transactionId,
             Source = GetCallerInfo()
         };
+    }
+
+    /// <summary>
+    /// Detecta possíveis tentativas de SQL Injection
+    /// </summary>
+    /// <param name="commandText">Texto do comando SQL</param>
+    /// <param name="parameters">Parâmetros do comando</param>
+    /// <returns>Resultado da detecção</returns>
+    public SqlInjectionResult DetectSqlInjection(string commandText, Dictionary<string, object?> parameters)
+    {
+        var result = new SqlInjectionResult { IsDetected = false };
+
+        // Padrões comuns de SQL Injection
+        var patterns = new List<string>
+        {
+            @"'.*--",                   // Comentário SQL
+            @"'.*OR.*'.*'.*'",          // OR baseado em injeção
+            @"'.*AND.*'.*'.*'",         // AND baseado em injeção
+            @".*UNION.*SELECT.*",       // UNION SELECT injeção
+            @".*DROP.*TABLE.*",         // Tentativa de apagar tabela
+            @".*EXEC.*sp_.*",           // Execução de stored procedure
+            @".*xp_cmdshell.*"          // xp_cmdshell execução (SQL Server)
+        };
+
+        // Verifica se o comando SQL contém algum dos padrões
+        foreach (var pattern in patterns)
+        {
+            if (Regex.IsMatch(commandText, pattern, RegexOptions.IgnoreCase))
+            {
+                result.IsDetected = true;
+                result.Pattern = pattern;
+                result.Severity = SqlInjectionSeverity.High;
+                break;
+            }
+        }
+
+        // Verifica os parâmetros em busca de padrões suspeitos
+        if (!result.IsDetected && parameters.Any())
+        {
+            foreach (var param in parameters)
+            {
+                if (param.Value is string paramValue && !string.IsNullOrEmpty(paramValue))
+                {
+                    foreach (var pattern in patterns)
+                    {
+                        if (Regex.IsMatch(paramValue, pattern, RegexOptions.IgnoreCase))
+                        {
+                            result.IsDetected = true;
+                            result.Pattern = pattern;
+                            result.Severity = SqlInjectionSeverity.Medium;
+                            result.Parameter = param.Key;
+                            break;
+                        }
+                    }
+                }
+
+                if (result.IsDetected) break;
+            }
+        }
+
+        return result;
     }
 
     /// <summary>
