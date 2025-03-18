@@ -1,3 +1,4 @@
+using Anon.NET.Core.Extensions;
 using Anon.NET.SqlInterception.Interfaces;
 using Anon.NET.SqlInterception.Models;
 using Serilog;
@@ -10,10 +11,12 @@ namespace Anon.NET.SqlInterception;
 public class SqlInterceptor : ISqlInterceptor
 {
     private readonly ILogger _logger;
+    private readonly IServiceProvider? _serviceProvider;
 
-    public SqlInterceptor(ILogger logger)
+    public SqlInterceptor(ILogger logger, IServiceProvider? serviceProvider = null)
     {
         _logger = logger;
+        _serviceProvider = serviceProvider;
     }
 
     /// <inheritdoc />
@@ -64,6 +67,11 @@ public class SqlInterceptor : ISqlInterceptor
                 query.AdditionalInfo
             }
         );
+
+        if (_serviceProvider != null)
+        {
+            AnonDashboardExtensions.LogQueryForDashboard(query, _serviceProvider);
+        }
     }
 
     /// <inheritdoc />

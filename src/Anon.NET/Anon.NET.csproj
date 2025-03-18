@@ -1,23 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+      <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-    </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.3.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.14" />
+    <PackageReference Include="Serilog" Version="4.2.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+    <PackageReference Include="System.Text.Json" Version="9.0.3" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.14" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.14" />
-      <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
-      <PackageReference Include="Serilog" Version="4.2.0" />
-      <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Anonimization\" />
+    <Folder Include="Core\Models\" />
+    <Folder Include="Core\Configurations\" />
+    <Folder Include="SqlInterception\AdoNet\" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Anonimization\" />
-      <Folder Include="Core\Models\" />
-      <Folder Include="Core\Configurations\" />
-      <Folder Include="SqlInterception\AdoNet\" />
-    </ItemGroup>
-
+  <ItemGroup>
+    <None Remove="Dashboard\Resources\dashboard.js" />
+    <None Remove="Dashboard\Resources\index.html" />
+    <None Remove="Dashboard\Resources\styles.css" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Dashboard\Resources\dashboard.js" />
+    <EmbeddedResource Include="Dashboard\Resources\index.html" />
+    <EmbeddedResource Include="Dashboard\Resources\styles.css" />
+  </ItemGroup>
 </Project>
+

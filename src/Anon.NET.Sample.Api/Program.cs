@@ -19,6 +19,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAnonDashboard();
+
 builder.Services.AddDbContext<SampleDbContext>((sp, options) => {
     var interceptor = sp.GetRequiredService<AnonDbCommandInterceptor>();
 
@@ -26,8 +28,6 @@ builder.Services.AddDbContext<SampleDbContext>((sp, options) => {
     options.UseSqlite("Data Source=sample.db")
            .UseAnonSqlInterception(interceptor); // Integra o interceptor SQL
 });
-
-
 
 var app = builder.Build();
 
@@ -43,6 +43,8 @@ if (app.Environment.IsDevelopment())
     //    dbContext.Database.EnsureCreated();
     //}
 }
+
+app.UseAnonDashboard();
 
 app.UseAnonymization();
 
