@@ -5,7 +5,7 @@ namespace Anon.NET.Dashboard;
 
 public class InMemoryQueryStore : IAnonQueryStore
 {
-    private readonly ConcurrentQueue<SqlQuery> _queries = new ConcurrentQueue<SqlQuery>();
+    private readonly ConcurrentQueue<SqlQuery> _queries = new();
     private readonly int _maxSize;
 
     /// <summary>
