@@ -36,25 +36,6 @@ public static class AnonDashboardExtensions
     {
         var assembly = Assembly.GetExecutingAssembly();
 
-        // Endpoint para a página HTML do dashboard
-        app.Map(dashboardPath, dashboardApp =>
-        {
-            dashboardApp.Run(async context =>
-            {
-                context.Response.ContentType = "text/html";
-                var stream = assembly.GetManifestResourceStream("Anon.NET.Dashboard.Resources.index.html");
-
-                if (stream != null)
-                {
-                    await stream.CopyToAsync(context.Response.Body);
-                }
-                else
-                {
-                    await context.Response.WriteAsync("Dashboard resource not found. Make sure the resources are embedded correctly.");
-                }
-            });
-        });
-
         // Endpoint para obter as queries recentes como JSON
         app.Map($"{dashboardPath}/api/queries", queriesApp =>
         {
@@ -77,14 +58,24 @@ public static class AnonDashboardExtensions
         {
             fileApp.Run(async context =>
             {
-                var filename = context.Request.Path.Value?.TrimStart('/');
+                var filename = context.Request.Path.Value?.Split('/').LastOrDefault();
                 if (string.IsNullOrEmpty(filename))
                 {
                     context.Response.StatusCode = 404;
                     return;
                 }
 
-                var stream = assembly.GetManifestResourceStream($"Anon.NET.Dashboard.Resources.{filename}");
+                // Obter todos os recursos embutidos para debug
+                var allResources = assembly.GetManifestResourceNames();
+                var resourceName = allResources.FirstOrDefault(r => r.EndsWith(filename));
+
+                // Fallback para o caminho original caso não encontre pelo nome do arquivo
+                if (string.IsNullOrEmpty(resourceName))
+                {
+                    resourceName = $"Anon.NET.Dashboard.Resources.{filename}";
+                }
+
+                var stream = assembly.GetManifestResourceStream(resourceName);
                 if (stream == null)
                 {
                     context.Response.StatusCode = 404;
@@ -97,6 +88,25 @@ public static class AnonDashboardExtensions
 
                 context.Response.ContentType = contentType;
                 await stream.CopyToAsync(context.Response.Body);
+            });
+        });
+
+        // Endpoint para a página HTML do dashboard
+        app.Map(dashboardPath, dashboardApp =>
+        {
+            dashboardApp.Run(async context =>
+            {
+                context.Response.ContentType = "text/html";
+                var stream = assembly.GetManifestResourceStream("Anon.NET.Dashboard.Resources.index.html");
+
+                if (stream != null)
+                {
+                    await stream.CopyToAsync(context.Response.Body);
+                }
+                else
+                {
+                    await context.Response.WriteAsync("Dashboard resource not found. Make sure the resources are embedded correctly.");
+                }
             });
         });
 
