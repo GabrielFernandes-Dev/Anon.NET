@@ -7,10 +7,3 @@ public class SqlInjectionResult
     public SqlInjectionSeverity Severity { get; set; }
     public string? Parameter { get; set; }
 }
-
-public enum SqlInjectionSeverity
-{
-    Low,
-    Medium,
-    High
-}

@@ -33,7 +33,7 @@ public class SqlInterceptor : ISqlInterceptor
                 injectionResult.Severity
             );
 
-            // Add the SQL injection detection result to additional info
+
             query.AdditionalInfo["SqlInjectionDetected"] = true;
             query.AdditionalInfo["SqlInjectionPattern"] = injectionResult.Pattern;
             query.AdditionalInfo["SqlInjectionSeverity"] = injectionResult.Severity.ToString();
@@ -51,7 +51,6 @@ public class SqlInterceptor : ISqlInterceptor
             query.Source
         );
 
-        // Log da query com todas as informações para análise detalhada
         _logger.Debug(
             "SQL Details: {QueryDetails}",
             new
@@ -111,25 +110,25 @@ public class SqlInterceptor : ISqlInterceptor
         var result = new SqlInjectionResult { IsDetected = false };
 
         // Padrões comuns de SQL Injection
-        var patterns = new List<string>
+        var patterns = new List<SqlInjectionRegexPatterns>
         {
-            @"'.*--",                   // Comentário SQL
-            @"'.*OR.*'.*'.*'",          // OR baseado em injeção
-            @"'.*AND.*'.*'.*'",         // AND baseado em injeção
-            @".*UNION.*SELECT.*",       // UNION SELECT injeção
-            @".*DROP.*TABLE.*",         // Tentativa de apagar tabela
-            @".*EXEC.*sp_.*",           // Execução de stored procedure
-            @".*xp_cmdshell.*"          // xp_cmdshell execução (SQL Server)
+            new(@"'.*--", SqlInjectionSeverity.Low) { Pattern = @"'.*--" },
+            new(@"'.*OR.*'.*'.*'", SqlInjectionSeverity.Medium) { Pattern = @"'.*OR.*'.*'.*'" },
+            new(@"'.*AND.*'.*'.*'", SqlInjectionSeverity.Medium) { Pattern = @"'.*AND.*'.*'.*'"},
+            new(@".*UNION.*SELECT.*", SqlInjectionSeverity.Medium) { Pattern = @".*UNION.*SELECT.*" },
+            new(@".*DROP.*TABLE.*", SqlInjectionSeverity.High) { Pattern = @".*DROP.*TABLE.*" },
+            new(@".*EXEC.*sp_.*", SqlInjectionSeverity.Critical) { Pattern = @".*EXEC.*sp_.*" },
+            new(@".*xp_cmdshell.*", SqlInjectionSeverity.Critical) { Pattern = @".*xp_cmdshell.*" }
         };
 
         // Verifica se o comando SQL contém algum dos padrões
         foreach (var pattern in patterns)
         {
-            if (Regex.IsMatch(commandText, pattern, RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(commandText, pattern.Pattern, RegexOptions.IgnoreCase))
             {
                 result.IsDetected = true;
-                result.Pattern = pattern;
-                result.Severity = SqlInjectionSeverity.High;
+                result.Pattern = pattern.Pattern;
+                result.Severity = pattern.Severity;
                 break;
             }
         }
@@ -143,11 +142,11 @@ public class SqlInterceptor : ISqlInterceptor
                 {
                     foreach (var pattern in patterns)
                     {
-                        if (Regex.IsMatch(paramValue, pattern, RegexOptions.IgnoreCase))
+                        if (Regex.IsMatch(paramValue, pattern.Pattern, RegexOptions.IgnoreCase))
                         {
                             result.IsDetected = true;
-                            result.Pattern = pattern;
-                            result.Severity = SqlInjectionSeverity.Medium;
+                            result.Pattern = pattern.Pattern;
+                            result.Severity = pattern.Severity;
                             result.Parameter = param.Key;
                             break;
                         }
@@ -233,7 +232,7 @@ public class SqlInterceptor : ISqlInterceptor
                 declaringType.Namespace?.StartsWith("Anon.NET.SqlInterception") == true)
                 continue;
 
-            return $"{declaringType.FullName}.{method.Name}";
+            return $"{method.Module} {declaringType.FullName}.{method.Name}";
         }
 
         return "Unknown Source";

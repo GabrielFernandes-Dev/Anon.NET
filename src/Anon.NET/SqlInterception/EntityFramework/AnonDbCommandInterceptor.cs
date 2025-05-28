@@ -165,7 +165,6 @@ public class AnonDbCommandInterceptor : DbCommandInterceptor
     // Método auxiliar para interceptar após a execução
     private void InterceptAfterExecution(DbCommand command, double durationMs)
     {
-        // Tenta extrair o ID da query do comentário adicionado antes da execução
         string? queryIdStr = null;
         var match = Regex.Match(command.CommandText, @"/\* QueryId: ([0-9a-fA-F-]+) \*/");
         if (match.Success && match.Groups.Count > 1)
@@ -174,7 +173,6 @@ public class AnonDbCommandInterceptor : DbCommandInterceptor
         if (!Guid.TryParse(queryIdStr, out var queryId))
             return;
 
-        // Extrai o ID de transação do contexto HTTP, se disponível
         string? transactionId = null;
         if (_httpContextAccessor?.HttpContext != null)
         {
@@ -187,12 +185,10 @@ public class AnonDbCommandInterceptor : DbCommandInterceptor
 
         // Ajusta as propriedades com os valores específicos dessa execução
         sqlQuery.Id = queryId;
-        // Remove o comentário com o ID da query;
         if (match.Success && match.Groups.Count > 1)
             sqlQuery.CommandText = Regex.Replace(command.CommandText, @"/\* QueryId: [0-9a-fA-F-]+ \*/\r?\n", "");
         sqlQuery.DurationMs = (long)durationMs;
 
-        // Intercepta e registra a query executada
         _sqlInterceptor.InterceptQuery(sqlQuery);
     }
 }
