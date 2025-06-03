@@ -11,16 +11,19 @@ public static class AnonymizationExtensions
         // Registra os serviços necessários
         services.AddSingleton<IAnonymizationMethodRegistry, AnonymizationMethodRegistry>();
         services.AddScoped<IAnonymizationProcessor, AnonymizationProcessor>();
+
         services.AddScoped<AnonymizationInterceptor>();
+        services.AddScoped<AnonymizationSaveInterceptor>();
 
         return services;
     }
 
     public static DbContextOptionsBuilder UseAnonymization(
         this DbContextOptionsBuilder optionsBuilder,
-        AnonymizationInterceptor interceptor)
+        AnonymizationInterceptor materializationInterceptor,
+        AnonymizationSaveInterceptor saveInterceptor)
     {
-        optionsBuilder.AddInterceptors(interceptor);
+        optionsBuilder.AddInterceptors(materializationInterceptor, saveInterceptor);
         return optionsBuilder;
     }
 }

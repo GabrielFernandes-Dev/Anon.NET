@@ -1,3 +1,5 @@
+using Anon.NET.Anonimization;
+using Anon.NET.Anonimization.Interfaces;
 using Anon.NET.SqlInterception;
 using Anon.NET.SqlInterception.EntityFramework;
 using Anon.NET.SqlInterception.Interfaces;

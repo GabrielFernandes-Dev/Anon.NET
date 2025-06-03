@@ -1,3 +1,4 @@
+using Anon.NET.Anonimization.Interfaces;
 using Anon.NET.SqlInterception.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -6,10 +7,11 @@ using System.Text.RegularExpressions;
 
 namespace Anon.NET.SqlInterception.EntityFramework;
 
-public class AnonDbCommandInterceptor : DbCommandInterceptor
+public class AnonDbCommandInterceptor : DbCommandInterceptor, IMaterializationInterceptor
 {
     private readonly ISqlInterceptor _sqlInterceptor;
     private readonly IHttpContextAccessor? _httpContextAccessor;
+
 
     public AnonDbCommandInterceptor(ISqlInterceptor sqlInterceptor, IHttpContextAccessor? httpContextAccessor = null)
     {

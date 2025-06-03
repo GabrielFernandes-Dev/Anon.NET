@@ -15,24 +15,25 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateLogger();
 
-builder.Services.AddAnonymization(builder.Configuration);
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAnonymization(builder.Configuration);
 builder.Services.AddAnonDashboard();
 builder.Services.AddAnonymization();
-
+    
 string connectionString = builder.Configuration.GetConnectionString("ConnectionString:Anon.NET")!;
 var conStrBuilder = new MySqlConnectionStringBuilder(connectionString);
 builder.Services.AddDbContext<SampleDbContext>((sp, options) => {
     var interceptor = sp.GetRequiredService<AnonDbCommandInterceptor>();
-    var anonInterceptor = sp.GetRequiredService<AnonymizationInterceptor>();
+
+    var materializationInterceptor = sp.GetRequiredService<AnonymizationInterceptor>();
+    var saveInterceptor = sp.GetRequiredService<AnonymizationSaveInterceptor>();
 
     options.UseMySQL(conStrBuilder.ConnectionString)
            .UseAnonSqlInterception(interceptor)
-           .UseAnonymization(anonInterceptor);
+           .UseAnonymization(materializationInterceptor, saveInterceptor);
 });
 
 var app = builder.Build();

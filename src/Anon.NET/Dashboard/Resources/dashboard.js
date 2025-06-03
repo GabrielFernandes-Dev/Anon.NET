@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Elementos UI
     const queryTableBody = document.getElementById('query-table-body');
     const totalQueriesEl = document.getElementById('total-queries');
@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
         totalQueriesEl.textContent = queries.length;
 
         // Total de possíveis injeções SQL
-        const injectionCount = queries.filter(q => 
-            q.additionalInfo && q.additionalInfo.sqlInjectionDetected === true
+        const injectionCount = queries.filter(q =>
+            q.additionalInfo && q.additionalInfo.SqlInjectionDetected === true
         ).length;
         injectionCountEl.textContent = injectionCount;
 
@@ -86,16 +86,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Criar barras para cada tipo
         const maxCount = Math.max(...Object.values(typeCounts), 1);
-        
+
         for (const [type, count] of Object.entries(typeCounts)) {
             const percentage = (count / maxCount) * 100;
             const bar = document.createElement('div');
             bar.className = 'chart-bar';
             bar.style.height = `${percentage}%`;
-            
+
             const label = document.createElement('span');
             label.textContent = type;
-            
+
             bar.appendChild(label);
             queryTypeDistribution.appendChild(bar);
         }
@@ -114,15 +114,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const filteredQueries = queries.filter(query => {
             // Filtro por severidade
             if (currentFilters.severity !== 'all') {
-                const hasInjection = query.additionalInfo && query.additionalInfo.sqlInjectionDetected === true;
-                
+                const hasInjection = query.additionalInfo && query.additionalInfo.SqlInjectionDetected === true;
+
                 if (currentFilters.severity === 'none' && hasInjection) return false;
-                
+
                 if (hasInjection && currentFilters.severity !== 'none') {
-                    const severity = query.additionalInfo.sqlInjectionSeverity?.toLowerCase();
+                    const severity = query.additionalInfo.SqlInjectionSeverity?.toLowerCase();
                     if (severity !== currentFilters.severity.toLowerCase()) return false;
                 }
-                
+
                 if (currentFilters.severity !== 'none' && !hasInjection) return false;
             }
 
@@ -137,15 +137,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Renderizar linhas da tabela
         filteredQueries.forEach(query => {
             const row = document.createElement('tr');
-            
+
             // Verificar se há detecção de SQL Injection
-            const hasInjection = query.additionalInfo && query.additionalInfo.sqlInjectionDetected === true;
+            let hasInjection = query.additionalInfo.SqlInjectionDetected;
             let severityClass = 'severity-none';
             let severityText = 'Nenhuma';
-            
+
             if (hasInjection) {
-                const severity = query.additionalInfo.sqlInjectionSeverity?.toLowerCase();
-                if (severity === 'high') {
+                const severity = query.additionalInfo.SqlInjectionSeverity?.toLowerCase();
+                if (severity === 'critical') {
+                    severityClass = 'severity-high';
+                    severityText = 'Critica';
+                }
+                else if (severity === 'high') {
                     severityClass = 'severity-high';
                     severityText = 'Alta';
                 } else if (severity === 'medium') {
@@ -156,57 +160,55 @@ document.addEventListener('DOMContentLoaded', function() {
                     severityText = 'Baixa';
                 }
             }
-            
-            // Formatar data
+
             const timestamp = new Date(query.timestamp).toLocaleString();
-            
-            // Criar células da linha
+
             row.innerHTML = `
-                <td>${query.id.substring(0, 8)}...</td>
-                <td>${timestamp}</td>
-                <td>${query.queryType || 'UNKNOWN'}</td>
-                <td>${query.durationMs} ms</td>
-                <td>${hasInjection ? 'Sim' : 'Não'}</td>
-                <td class="${severityClass}">${severityText}</td>
-                <td><button class="action-btn" data-id="${query.id}">Detalhes</button></td>
-            `;
-            
-            // Adicionar evento para abrir modal
+                        <td>${query.id.substring(0, 8)}...</td>
+                        <td>${timestamp}</td>
+                        <td>${query.queryType || 'UNKNOWN'}</td>
+                        <td>${query.durationMs} ms</td>
+                        <td>${hasInjection ? 'Sim' : 'Não'}</td>
+                        <td class="${severityClass}">${severityText}</td>
+                        <td><button class="action-btn btn btn-primary text-center" data-id="${query.id}">Detalhes</button></td>
+                    `;
+
             const detailBtn = row.querySelector('.action-btn');
             detailBtn.addEventListener('click', () => showDetailModal(query));
-            
+
             queryTableBody.appendChild(row);
         });
     }
 
     function showDetailModal(query) {
+        console.log("Chamando Modal");
+        console.log(query);
         // Preencher informações do modal
         document.getElementById('detail-id').textContent = query.id;
         document.getElementById('detail-timestamp').textContent = new Date(query.timestamp).toLocaleString();
         document.getElementById('detail-type').textContent = query.queryType || 'UNKNOWN';
         document.getElementById('detail-duration').textContent = query.durationMs;
         document.getElementById('detail-source').textContent = query.source || 'N/A';
-        document.getElementById('detail-transaction-id').textContent = query.transactionId || 'N/A';
         document.getElementById('detail-sql').textContent = query.commandText || 'N/A';
         document.getElementById('detail-parameters').textContent = JSON.stringify(query.parameters || {}, null, 2);
 
         // Seção de SQL Injection
         const injectionSection = document.getElementById('injection-section');
-        const hasInjection = query.additionalInfo && query.additionalInfo.sqlInjectionDetected === true;
-        
+        const hasInjection = query.additionalInfo && query.additionalInfo.SqlInjectionDetected === true;
+
         if (hasInjection) {
             injectionSection.style.display = 'block';
             document.getElementById('detail-injection-detected').textContent = 'Sim';
-            document.getElementById('detail-injection-pattern').textContent = query.additionalInfo.sqlInjectionPattern || 'N/A';
-            
+            document.getElementById('detail-injection-pattern').textContent = query.additionalInfo.SqlInjectionPattern || 'N/A';
+
             let severityText = 'N/A';
-            if (query.additionalInfo.sqlInjectionSeverity) {
-                const severity = query.additionalInfo.sqlInjectionSeverity.toLowerCase();
+            if (query.additionalInfo.SqlInjectionSeverity) {
+                const severity = query.additionalInfo.SqlInjectionSeverity.toLowerCase();
                 if (severity === 'high') severityText = 'Alta';
                 else if (severity === 'medium') severityText = 'Média';
                 else if (severity === 'low') severityText = 'Baixa';
             }
-            
+
             document.getElementById('detail-injection-severity').textContent = severityText;
             document.getElementById('detail-injection-parameter').textContent = query.additionalInfo.sqlInjectionParameter || 'N/A';
         } else {
@@ -217,3 +219,8 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = 'block';
     }
 });
+
+function hideDetailModal() {
+    const modal = document.getElementById('query-detail-modal');
+    modal.style.display = 'none';
+}

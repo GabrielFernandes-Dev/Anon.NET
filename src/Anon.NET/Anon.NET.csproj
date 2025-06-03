@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Anonimization\" />
     <Folder Include="Core\Models\" />
     <Folder Include="Core\Configurations\" />
     <Folder Include="SqlInterception\AdoNet\" />

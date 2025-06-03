@@ -113,7 +113,7 @@ public class SqlInterceptor : ISqlInterceptor
         var patterns = new List<SqlInjectionRegexPatterns>
         {
             new(@"'.*--", SqlInjectionSeverity.Low) { Pattern = @"'.*--" },
-            new(@"'.*OR.*'.*'.*'", SqlInjectionSeverity.Medium) { Pattern = @"'.*OR.*'.*'.*'" },
+            new(@"'.*OR.*'.*'.*'", SqlInjectionSeverity.High) { Pattern = @"'.*OR.*'.*'.*'" },
             new(@"'.*AND.*'.*'.*'", SqlInjectionSeverity.Medium) { Pattern = @"'.*AND.*'.*'.*'"},
             new(@".*UNION.*SELECT.*", SqlInjectionSeverity.Medium) { Pattern = @".*UNION.*SELECT.*" },
             new(@".*DROP.*TABLE.*", SqlInjectionSeverity.High) { Pattern = @".*DROP.*TABLE.*" },
@@ -122,7 +122,7 @@ public class SqlInterceptor : ISqlInterceptor
         };
 
         // Verifica se o comando SQL contém algum dos padrões
-        foreach (var pattern in patterns)
+        foreach (var pattern in patterns.OrderByDescending(p => p.Severity))
         {
             if (Regex.IsMatch(commandText, pattern.Pattern, RegexOptions.IgnoreCase))
             {
