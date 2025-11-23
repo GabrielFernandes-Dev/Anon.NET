@@ -6,8 +6,8 @@ namespace Anon.NET.Anonimization;
 
 public class AnonymizationMethodRegistry : IAnonymizationMethodRegistry
 {
-    private readonly Dictionary<PropertyAnonymizationMethod, IAnonymizationMethod> _processors =
-            new Dictionary<PropertyAnonymizationMethod, IAnonymizationMethod>();
+    private readonly Dictionary<PropertyAnonymizationMethod, IPropertyAnonymizationMethod> _propertieProcessors = new();
+    private readonly IKAnonymityMethod _kAnonymityProcessor;
 
     public AnonymizationMethodRegistry()
     {
@@ -16,15 +16,22 @@ public class AnonymizationMethodRegistry : IAnonymizationMethodRegistry
         RegisterProcessor(PropertyAnonymizationMethod.Nullify, new NullifyMethod());
         RegisterProcessor(PropertyAnonymizationMethod.Randomize, new RandomizeMethod());
         RegisterProcessor(PropertyAnonymizationMethod.Tokenize, new TokenizeMethod());
+
+        _kAnonymityProcessor = new KAnonymityMethod();
     }
 
-    public IAnonymizationMethod? GetProcessor(PropertyAnonymizationMethod method)
+    public IPropertyAnonymizationMethod? GetProcessor(PropertyAnonymizationMethod method)
     {
-        return _processors.TryGetValue(method, out var processor) ? processor : null;
+        return _propertieProcessors.TryGetValue(method, out var processor) ? processor : null;
     }
 
-    public void RegisterProcessor(PropertyAnonymizationMethod method, IAnonymizationMethod processor)
+    public IKAnonymityMethod GetKAnonymityProcessor()
     {
-        _processors[method] = processor;
+        return _kAnonymityProcessor;
+    }
+
+    public void RegisterProcessor(PropertyAnonymizationMethod method, IPropertyAnonymizationMethod processor)
+    {
+        _propertieProcessors[method] = processor;
     }
 }

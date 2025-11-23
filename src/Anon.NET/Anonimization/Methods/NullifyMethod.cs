@@ -7,7 +7,7 @@ namespace Anon.NET.Anonimization.Methods;
 /// Método de anonimização que substitui o valor por null ou valor padrão
 /// Útil para dados muito sensíveis que não devem ser visíveis
 /// </summary>
-public class NullifyMethod : IAnonymizationMethod
+public class NullifyMethod : IPropertyAnonymizationMethod
 {
     public object? Process(object value, Type targetType, AnonymizeAttribute? attribute)
     {

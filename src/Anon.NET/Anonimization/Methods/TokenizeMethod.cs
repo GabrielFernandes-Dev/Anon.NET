@@ -10,7 +10,7 @@ namespace Anon.NET.Anonimization.Methods;
 /// Método de anonimização que substitui valores por tokens únicos
 /// Permite reversibilidade e mantém relacionamentos entre dados
 /// </summary>
-public class TokenizeMethod : IAnonymizationMethod
+public class TokenizeMethod : IPropertyAnonymizationMethod
 {
     private static readonly ConcurrentDictionary<string, string> _tokenMap = new();
     private static readonly ConcurrentDictionary<string, string> _reverseTokenMap = new();

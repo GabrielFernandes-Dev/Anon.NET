@@ -27,6 +27,6 @@ public class InMemoryQueryStore : IAnonQueryStore
     /// <inheritdoc />
     public IEnumerable<SqlQuery> GetAllQueries()
     {
-        return _queries.ToArray().Reverse();
+        return _queries.ToArray();
     }
 }

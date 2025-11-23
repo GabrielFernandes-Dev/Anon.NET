@@ -4,6 +4,7 @@ namespace Anon.NET.Anonimization.Interfaces;
 
 public interface IAnonymizationMethodRegistry
 {
-    IAnonymizationMethod? GetProcessor(PropertyAnonymizationMethod method);
-    void RegisterProcessor(PropertyAnonymizationMethod method, IAnonymizationMethod processor);
+    IPropertyAnonymizationMethod? GetProcessor(PropertyAnonymizationMethod method);
+    IKAnonymityMethod GetKAnonymityProcessor();
+    void RegisterProcessor(PropertyAnonymizationMethod method, IPropertyAnonymizationMethod processor);
 }

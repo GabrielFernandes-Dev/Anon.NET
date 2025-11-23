@@ -7,7 +7,7 @@ namespace Anon.NET.Anonimization.Methods;
 /// Método de anonimização que gera valores aleatórios do mesmo tipo
 /// Mantém a estrutura dos dados mas altera o conteúdo
 /// </summary>
-public class RandomizeMethod : IAnonymizationMethod
+public class RandomizeMethod : IPropertyAnonymizationMethod
 {
     private static readonly Random _random = new Random();
     private static readonly string[] _firstNames = { "João", "Maria", "Pedro", "Ana", "Carlos", "Fernanda", "Ricardo", "Juliana", "Marcos", "Patrícia" };

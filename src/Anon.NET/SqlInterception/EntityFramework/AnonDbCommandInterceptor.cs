@@ -149,7 +149,6 @@ public class AnonDbCommandInterceptor : DbCommandInterceptor, IMaterializationIn
     // Método auxiliar para interceptar antes da execução
     private void InterceptBeforeExecution(DbCommand command)
     {
-        // Extrai o ID de transação do contexto HTTP, se disponível
         string? transactionId = null;
         if (_httpContextAccessor?.HttpContext != null)
         {
@@ -157,10 +156,8 @@ public class AnonDbCommandInterceptor : DbCommandInterceptor, IMaterializationIn
             transactionId = transactionIdValues.FirstOrDefault();
         }
 
-        // Extrai informações da query
         var sqlQuery = _sqlInterceptor.ExtractQueryFromCommand(command, transactionId);
 
-        // Guarda o ID da query como informação de rastreamento no DbCommand
         command.CommandText = $"/* QueryId: {sqlQuery.Id} */" + Environment.NewLine + command.CommandText;
     }
 
@@ -182,10 +179,8 @@ public class AnonDbCommandInterceptor : DbCommandInterceptor, IMaterializationIn
             transactionId = transactionIdValues.FirstOrDefault();
         }
 
-        // Cria um objeto SqlQuery com as informações pós-execução
         var sqlQuery = _sqlInterceptor.ExtractQueryFromCommand(command, transactionId);
 
-        // Ajusta as propriedades com os valores específicos dessa execução
         sqlQuery.Id = queryId;
         if (match.Success && match.Groups.Count > 1)
             sqlQuery.CommandText = Regex.Replace(command.CommandText, @"/\* QueryId: [0-9a-fA-F-]+ \*/\r?\n", "");

@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace Anon.NET.Anonimization.Methods;
 
-public class HasingMethod : IAnonymizationMethod
+public class HasingMethod : IPropertyAnonymizationMethod
 {
     public object? Process(object value, Type targetType, AnonymizeAttribute? attribute)
     {

@@ -7,7 +7,7 @@ namespace Anon.NET.Anonimization.Methods;
 /// Método de anonimização que mascara parte do valor com caracteres especiais
 /// Útil para CPF, telefones, emails, etc.
 /// </summary>
-public class MaskMethod : IAnonymizationMethod
+public class MaskMethod : IPropertyAnonymizationMethod
 {
     public object? Process(object value, Type targetType, AnonymizeAttribute? attribute)
     {
