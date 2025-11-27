@@ -43,7 +43,6 @@ public class AnonymizationProcessor : IAnonymizationProcessor
                 ConfigurarCallbackDeAtualizacao(processor, entityType);
 
                 processor.Process(entity, quasiIdentifierProperty, k);
-                return entity;
             }
         }
 

@@ -37,8 +37,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function fetchQueries() {
-        fetch('anon-dashboard/api/queries')
-            .then(response => response.json())
+        fetch('api/queries')
+            .then(response => {
+                console.log(response)
+                console.log(response.json())
+                response.json()
+            })
             .then(data => {
                 console.log(data);
                 queries = data;

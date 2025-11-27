@@ -58,7 +58,7 @@ internal class KAnonymityMethod : IKAnonymityMethod
             }
         }
 
-        int limiteMinimo = K * 3;
+        int limiteMinimo = K * 2;
 
         if (agrupamentoEntidadeAtual.Count < limiteMinimo)
             return;
@@ -92,7 +92,7 @@ internal class KAnonymityMethod : IKAnonymityMethod
             Console.WriteLine($"[K-Anonymity] Atualizando {agrupamentoEntidadeAtual.Count} entidades no banco de dados...");
 
             var entidadesParaAtualizar = agrupamentoEntidadeAtual.Values.ToList();
-            AtualizarEntidadesNoBanco(entidadesParaAtualizar);
+            //AtualizarEntidadesNoBanco(entidadesParaAtualizar);
 
             Console.WriteLine($"[K-Anonymity] Entidades atualizadas com sucesso!");
         }

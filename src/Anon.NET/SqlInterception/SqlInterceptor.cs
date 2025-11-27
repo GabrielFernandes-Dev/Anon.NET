@@ -113,6 +113,7 @@ public class SqlInterceptor : ISqlInterceptor
         var patterns = new List<SqlInjectionRegexPatterns>
         {
             new(@"'.*--", SqlInjectionSeverity.Low) { Pattern = @"'.*--" },
+            new(@"'.*#", SqlInjectionSeverity.Low) { Pattern = @"'.*#" },
             new(@"'.*OR.*'.*'.*'", SqlInjectionSeverity.High) { Pattern = @"'.*OR.*'.*'.*'" },
             new(@"'.*AND.*'.*'.*'", SqlInjectionSeverity.Medium) { Pattern = @"'.*AND.*'.*'.*'"},
             new(@".*UNION.*SELECT.*", SqlInjectionSeverity.Medium) { Pattern = @".*UNION.*SELECT.*" },

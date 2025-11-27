@@ -10,10 +10,10 @@ public static class AnonymizationExtensions
     {
         // Registra os serviços necessários
         services.AddSingleton<IAnonymizationMethodRegistry, AnonymizationMethodRegistry>();
-        services.AddScoped<IAnonymizationProcessor, AnonymizationProcessor>();
+        services.AddSingleton<IAnonymizationProcessor, AnonymizationProcessor>();
 
-        services.AddScoped<AnonymizationInterceptor>();
-        services.AddScoped<AnonymizationSaveInterceptor>();
+        services.AddSingleton<AnonymizationInterceptor>();
+        services.AddSingleton<AnonymizationSaveInterceptor>();
 
         return services;
     }
